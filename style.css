@@ -99,7 +99,7 @@
   height: 784px;
   background-color: #F4F4FC;
   border: 2px solid #E8E9F8;
-  background-image: url("./Vector.png");
+  background-image: url("https://res.cloudinary.com/dt5wsfrex/image/upload/v1684761264/Vector_z3l3uj.png");
   border-radius: 24px;
   display: flex;
   flex-direction: column;
@@ -230,17 +230,13 @@
   background: rgba(89, 30, 255, 0.2);
 }
 
-.card.active h4{
+.card.active h4, .card.active input[type="radio"]:checked + label{
   color: #591EFF;
 }
 
 .card.active .toggle .toggle-button{
   background: #591EFF;
   left: 12px;
-}
-
-.card.active input[type="radio"]:checked + label {
-  color: #591EFF;
 }
 
 .card.active input[type="radio"]:checked{

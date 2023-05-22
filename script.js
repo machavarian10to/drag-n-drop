@@ -1,21 +1,17 @@
 const dropZone = document.querySelector(".drop-zone");
 
-// Activate item for dragging
 function drag(event){
     event.dataTransfer.setData('text/plain', event.target.id);
 }
 
-// Prevents default drop behavior
 function allowDrop(event) {
     event.preventDefault();
 }
 
-// Prevents drop propagation
 function preventDrop(event){
     event.stopPropagation();
 }
 
-// Handles the drop event
 function dropCard(event) {
     event.preventDefault(); 
     const cardId = event.dataTransfer.getData("text");
@@ -31,11 +27,7 @@ function dropCard(event) {
 
     // Append card to dropzone
     if(cardId === "liveness-check" || cardId === "video-call-verification"){
-        const disabledInputs = card.querySelectorAll('input[disabled]');
-        disabledInputs.forEach(input => input.removeAttribute('disabled'));
-        const cardTexts = card.innerText.split("\n");
-        const [cardTitle, firstRadioText, secondRadioText] = cardTexts;
-        appendRadioCard(cardId, cardTitle, firstRadioText, secondRadioText, event)
+        appendRadioCard(cardId, card, event)
     }else {
         const cardText = card.innerText;
         appendDefaultCard(cardId, cardText, event);
@@ -53,10 +45,20 @@ function checkContingencies(card, id){
     if(id === "id-verification"){
         const dropZoneCard = dropZone.querySelector("#id-in-selfie-verification");
 
+        // Checks if ID-in-Selfie is dropped replace it with ID verification and its dependencies
         if(dropZoneCard) {
             const idInSelfieVerify = document.querySelector("#id-in-selfie-verification");
             idInSelfieVerify.classList.remove("dropped-card");
             disableCardStyles(idInSelfieVerify);
+
+            const faceMatch = dropZone.querySelector("#face-match");
+            const livenessCheck = dropZone.querySelector("#liveness-check");
+            if(faceMatch && !livenessCheck){
+                const card = document.querySelector("#face-match");
+                disableCardStyles(card);
+                card.classList.remove('dropped-card');
+                dropZone.removeChild(faceMatch);
+            }
 
             const droppedCards = Array.from(dropZone.querySelectorAll('.dropped-card'));
             const lastCard = droppedCards[droppedCards.length - 1];
@@ -122,16 +124,26 @@ function appendDefaultCard(id, text, e) {
     e.target.insertAdjacentHTML('beforeend', card);
 }
 
-function appendRadioCard(id, text, firstRadio, secondRadio, e){
-    const card = `
-    <div class="card dropped-card radio-options" id="${id}" draggable="true" ondragstart="drag(event)" ondrop="preventDrop(event)">
+function appendRadioCard(cardId, card, e){
+    const disabledInputs = card.querySelectorAll('input[disabled]');
+    disabledInputs.forEach(input => input.removeAttribute('disabled'));
+
+    const cardTexts = card.innerText.split("\n");
+    let [cardTitle, firstRadioText, secondRadio] = cardTexts;
+    let firstRadioId = firstRadioText;
+    if(firstRadioText === "1:1") firstRadioId = "one-on-one"
+    let groupName = "liveness"
+    if(cardId === "video-call-verification") groupName = "video-call";
+
+    const html = `
+    <div class="card dropped-card radio-options" id="${cardId}" ondrop="preventDrop(event)">
         <div class="workflow-frame">
             <div class="rectangle">
                 <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M11.75 15H11.6C10.3399 15 9.70982 15 9.22852 14.7548C8.80516 14.539 8.46095 14.1948 8.24524 13.7715C8 13.2902 8 12.6601 8 11.4V6.6C8 5.33988 8 4.70982 8.24524 4.22852C8.46095 3.80516 8.80516 3.46095 9.22852 3.24524C9.70982 3 10.3399 3 11.6 3H11.75M11.75 15C11.75 15.8284 12.4216 16.5 13.25 16.5C14.0784 16.5 14.75 15.8284 14.75 15C14.75 14.1716 14.0784 13.5 13.25 13.5C12.4216 13.5 11.75 14.1716 11.75 15ZM11.75 3C11.75 3.82843 12.4216 4.5 13.25 4.5C14.0784 4.5 14.75 3.82843 14.75 3C14.75 2.17157 14.0784 1.5 13.25 1.5C12.4216 1.5 11.75 2.17157 11.75 3ZM4.25 9L11.75 9M4.25 9C4.25 9.82843 3.57843 10.5 2.75 10.5C1.92157 10.5 1.25 9.82843 1.25 9C1.25 8.17157 1.92157 7.5 2.75 7.5C3.57843 7.5 4.25 8.17157 4.25 9ZM11.75 9C11.75 9.82843 12.4216 10.5 13.25 10.5C14.0784 10.5 14.75 9.82843 14.75 9C14.75 8.17157 14.0784 7.5 13.25 7.5C12.4216 7.5 11.75 8.17157 11.75 9Z" stroke="#591EFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
-            <h4>${text}</h4>
+            <h4>${cardTitle}</h4>
             <div class="check-circle">
                 <svg width="19" height="20" viewBox="0 0 19 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5.74996 10L8.24996 12.5L13.25 7.5M17.8333 10C17.8333 14.6024 14.1023 18.3333 9.49996 18.3333C4.89759 18.3333 1.16663 14.6024 1.16663 10C1.16663 5.39763 4.89759 1.66667 9.49996 1.66667C14.1023 1.66667 17.8333 5.39763 17.8333 10Z" stroke="#00B772" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
@@ -141,12 +153,12 @@ function appendRadioCard(id, text, firstRadio, secondRadio, e){
 
         <div class="radio-buttons">
             <div class="radios">
-                <input type="radio" name="${id}" id="${firstRadio}" onclick="onRadioChange(event)" />
-                <label for="${firstRadio}">${firstRadio}</label>
+                <input type="radio" name="${groupName}" id="${firstRadioId}" onchange="onRadioChange(event)" />
+                <label for="${firstRadioId}">${firstRadioText}</label>
             </div>
 
             <div class="radios">
-                <input type="radio" name="${id}" id="${secondRadio}" onclick="onRadioChange(event)" />
+                <input type="radio" name="${groupName}" id="${secondRadio}" onchange="onRadioChange(event)" />
                 <label for="${secondRadio}">${secondRadio}</label>
             </div>
         </div>
@@ -167,7 +179,7 @@ function appendRadioCard(id, text, firstRadio, secondRadio, e){
       </div>
     </div>
     `;
-    e.target.insertAdjacentHTML('beforeend', card);
+    e.target.insertAdjacentHTML('beforeend', html);
 }
   
 
@@ -179,25 +191,32 @@ function disableCard(event) {
     const dropZoneCard = dropZone.querySelector(`#${card.id}`);
     if(!dropZoneCard) return;
 
-    disableCardStyles(card);
-    dropZoneCard.classList.remove('dropped-card');
-
-    if(card.id === "liveness-check" || card.id === "video-call-verification"){
-        const enabledInputs = card.querySelectorAll('input');
-        enabledInputs.forEach(input => input.setAttribute('disabled', true));
+    if (card.id === "liveness-check" || card.id === "video-call-verification") {
+        const radioButtons = card.querySelectorAll('input');
+        radioButtons.forEach(radio => {
+          radio.checked = false;
+          radio.setAttribute('disabled', true);
+        });
     }
 
+    disableCardStyles(card);
+    dropZoneCard.classList.remove('dropped-card');
     dropZone.removeChild(dropZoneCard);
     checkDependencies(card.id);
 }
 
 function checkDependencies(id){
+    // Check if other cards are depend on that card
     if(id === "id-verification" || id === "id-in-selfie-verification"){
+        const idVerify = dropZone.querySelector("#id-verification");
+        const idInSelfieVerify = dropZone.querySelector("#id-in-selfie-verification");
+
         const idDatabasesCheck = dropZone.querySelector("#id-databases-check");
+        const amlScreening = dropZone.querySelector("#aml-screening");
+        const ageVerify = dropZone.querySelector("#age-verification");
+        const faceMatch = dropZone.querySelector("#face-match");
 
         if(idDatabasesCheck){
-            const idInSelfieVerify = dropZone.querySelector("#id-in-selfie-verification");
-            const idVerify = dropZone.querySelector("#id-verification");
             if(idInSelfieVerify || idVerify){
                 pass;
             }else {
@@ -206,6 +225,49 @@ function checkDependencies(id){
                 card.classList.remove('dropped-card');
                 dropZone.removeChild(idDatabasesCheck);
             }
+        }
+
+        if(amlScreening){
+            if(idInSelfieVerify || idVerify){
+                pass;
+            }else {
+                const card = document.querySelector("#aml-screening");
+                disableCardStyles(card);
+                card.classList.remove('dropped-card');
+                dropZone.removeChild(amlScreening);
+            }
+        }
+
+        if(ageVerify){
+            if(idInSelfieVerify || idVerify){
+                pass;
+            }else {
+                const card = document.querySelector("#age-verification");
+                disableCardStyles(card);
+                card.classList.remove('dropped-card');
+                dropZone.removeChild(ageVerify);
+            }
+        }
+
+        if(faceMatch){
+            const livenessCheck = dropZone.querySelector("#liveness-check");
+            if(!(idVerify && livenessCheck) && !idInSelfieVerify) {
+                const card = document.querySelector("#face-match");
+                disableCardStyles(card);
+                card.classList.remove('dropped-card');
+                dropZone.removeChild(faceMatch);
+            }
+        }
+    }else if(id === "liveness-check"){
+        const idVerify = dropZone.querySelector("#id-verification");
+        const idInSelfieVerify = dropZone.querySelector("#id-in-selfie-verification");
+        const faceMatch = dropZone.querySelector("#face-match");
+
+        if((faceMatch && !idVerify) || (faceMatch && !idInSelfieVerify)){
+            const card = document.querySelector("#face-match");
+            disableCardStyles(card);
+            card.classList.remove('dropped-card');
+            dropZone.removeChild(faceMatch);
         }
     }
 
@@ -233,7 +295,9 @@ function scaleDropzone(cards){
 
 
 function onRadioChange(event) {
-    const targetId = event.target.id;
-    const radioButtons = document.querySelectorAll(`input[id="${targetId}"]`);
-    radioButtons.forEach(radioButton => radioButton.checked = true)
-}   
+    const radioId = event.target.id;
+    const documentRadio = document.querySelector(`#${radioId}`);
+    const dropZoneRadio = dropZone.querySelector(`#${radioId}`);
+    documentRadio.checked = true;
+    dropZoneRadio.checked = true;
+}
