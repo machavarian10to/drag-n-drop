@@ -15,6 +15,7 @@ function deactivateDropzone() {
 
 function preventDrop(event){
     event.stopPropagation();
+    deactivateDropzone();
 }
 
 function dropCard(event) {
@@ -314,7 +315,7 @@ function disableCardStyles(card){
 
 function scaleDropzone(cards){
     const totalHeight = cards.reduce((sum, card) => sum + card.offsetHeight, 0);
-    const scale = totalHeight > dropZone.offsetHeight / 2 ? dropZone.offsetHeight / (totalHeight * 2) : 1;
+    const scale = totalHeight > dropZone.offsetHeight / 2 ? dropZone.offsetHeight / (totalHeight * 2.1) : 1;
     dropZone.style.transform = `scale(${scale})`;
 }
 
