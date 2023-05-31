@@ -52,7 +52,7 @@
   cursor: move;
   display: flex;
   align-items: center;
-  padding: 10px 14px 10px 10px;
+  padding: 10px 16px 10px 10px;
   gap: 10px;
   height: 56px;
   border: 2px solid rgba(139, 145, 221, 0.2);
@@ -65,6 +65,33 @@
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+input[type=radio] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid #CCCEDA;
+  outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+input[type="radio"]:checked {
+  border: 1px solid #591EFF;
+}
+
+input[type=radio]:checked::before {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #591EFF;
 }
 
 .radio-options{
@@ -82,7 +109,7 @@
 .radio-options .radio-buttons{
   position: absolute;
   bottom: 15px;
-  left: 55px;
+  left: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -164,6 +191,10 @@
   align-items: center;
 }
 
+.dropped-card .radio-buttons{
+  left: 55px;
+}
+
 .connector-wrapper .connector .cards-connection{
   display: none;
 }
@@ -174,10 +205,9 @@
 }
 
 .card .rectangle{
-  width: 36px;
-  height: 36px;
-  background: rgba(139, 145, 221, 0.2);
-  border-radius: 6px;
+  width: 25px;
+  height: 35px;
+  border-radius: 6px; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -219,15 +249,25 @@
 }
 
 .dropped-card input[type="radio"]:checked{
-  accent-color: #010947;
+  border: 1px solid #010947;
+}
+
+.dropped-card input[type=radio]:checked::before {
+  background: #010947;
 }
 
 .card.active {
+  background: #F6F3FF;
   border: 2px solid #591EFF;
 }
 
-.card.active .rectangle, .card.active .toggle, .dropped-card .rectangle{
+.card.active .toggle{
   background: rgba(89, 30, 255, 0.2);
+}
+
+.dropped-card .rectangle{
+  width: 36px;
+  background: #EFE9FF;
 }
 
 .card.active h4, .card.active input[type="radio"]:checked + label{
@@ -237,8 +277,4 @@
 .card.active .toggle .toggle-button{
   background: #591EFF;
   left: 12px;
-}
-
-.card.active input[type="radio"]:checked{
-  accent-color: #591EFF;
 }
