@@ -6,6 +6,11 @@ function drag(event){
 
 function allowDrop(event) {
     event.preventDefault();
+    document.querySelector(".right-column").classList.add("active");
+}
+
+function deactivateDropzone() {
+    document.querySelector(".right-column").classList.remove("active");
 }
 
 function preventDrop(event){
@@ -14,6 +19,7 @@ function preventDrop(event){
 
 function dropCard(event) {
     event.preventDefault(); 
+    deactivateDropzone();
     const cardId = event.dataTransfer.getData("text");
 
     // Checks if the card is already dropped
