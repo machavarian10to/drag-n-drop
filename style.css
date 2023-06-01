@@ -215,6 +215,7 @@ input[type=radio]:checked::before {
 }
 
 .connector-wrapper .connector{
+  height: 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;

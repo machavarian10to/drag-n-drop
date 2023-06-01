@@ -47,6 +47,7 @@ function dropCard(event) {
     if (index !== droppedCards.length - 1) {
         droppedCard.querySelector(".cards-connection").style.display = "block";
     }});
+    document.querySelector(".start-container .cards-connection").style.display = "block";
     scaleDropzone(droppedCards);
 }
 
@@ -299,6 +300,7 @@ function checkDependencies(id){
 
     // Remove connection svg if card is last one in dropzone
     const droppedCards = Array.from(dropZone.querySelectorAll('.dropped-card'));
+    if(droppedCards.length === 0) document.querySelector(".start-container .cards-connection").style.display = "none";
     const lastCard = droppedCards[droppedCards.length - 1];
     if(lastCard) lastCard.querySelector(".cards-connection").style.display = "none";
     scaleDropzone(droppedCards);
