@@ -1,5 +1,21 @@
 const dropZone = document.querySelector(".drop-zone");
 
+document.addEventListener('DOMContentLoaded', function() {
+  const cardElements = document.querySelectorAll('.card');
+  cardElements.forEach(cardElement => cardElement.addEventListener('dragstart', (event) => drag(event)));
+
+  const toggleElements = document.querySelectorAll('.toggle');
+  toggleElements.forEach(toggleElement => toggleElement.addEventListener('click', (event) => disableCard(event)));
+
+  const radioButtons = document.querySelectorAll('input[type="radio"]');
+  radioButtons.forEach(radio => radio.addEventListener('change', (event) => onRadioChange(event)));
+    
+  dropZone.addEventListener('dragleave', deactivateDropzone);
+  dropZone.addEventListener('dragover', allowDrop);
+  dropZone.addEventListener('drop', dropCard);
+});
+
+
 function drag(event){
     event.dataTransfer.setData('text/plain', event.target.id);
 }
